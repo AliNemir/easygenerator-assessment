@@ -16,7 +16,12 @@ async function bootstrap() {
 
   // Enable CORS with specific configuration for credentials
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Frontend development URLs
+    origin: [
+      'http://localhost:5173', 
+      'http://127.0.0.1:5173',
+      'https://easygenerator-frontend.vercel.app', // Add your frontend production URL
+      'https://easygenerator-assessment.vercel.app' // Alternative frontend URL
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -60,11 +65,13 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port, '127.0.0.1'); // Force IPv4 localhost
+  const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
+  
+  await app.listen(port, host);
 
-  logger.info(`Application is running on: http://localhost:${port}`);
+  logger.info(`Application is running on: http://${host}:${port}`);
   logger.info(
-    `Swagger documentation available at: http://localhost:${port}/api`,
+    `Swagger documentation available at: http://${host}:${port}/api`,
   );
 }
 
